@@ -1,0 +1,125 @@
+package main //pacote principal e deve começar por ele
+
+import (
+	"fmt"
+	"net/http"
+	"os"
+
+	//"reflect"
+	"time"
+)
+
+//import "reflect"  // para saber o tipo import a biblioteca// reflect.TypeOf(nome)// informa o tipo
+// tem a função onde coloca 0, ele informa pro codigo pra sair com sucesso.
+// pacote responsavel de fazer requisições; get/post
+
+const monitoramentos = 3
+const delay = 5
+
+func main() {
+
+	/*var sites [4]string
+	sites[0] = "https://random-status-code.herokuapp.com"
+	sites[1] = "https://www.alura.com.br"
+	sites[2] = "https://www.caelum.com.br"
+	fmt.Println(reflect.TypeOf(sites))
+	fmt.Println(sites)*/
+	exibeIntroducao() // chama na função principal so pra exibir
+	//exibeNomes()
+	for {
+
+		exibeMenu()
+
+		comando := leComando()
+
+		switch comando {
+		case 1:
+
+			inicarMonitoramento()
+
+		case 2:
+			fmt.Println("Exibindo Logs...")
+
+		case 0:
+			fmt.Println("Saindo do Programa")
+			os.Exit(0)
+		default:
+			fmt.Println("Não conheço esse comando")
+			os.Exit(-1) // -1 indica que o ocorreu algum erro
+		}
+	}
+
+}
+
+func exibeIntroducao() {
+	nome := "Edrielle"
+	versao := 1.1
+	fmt.Println("Ola sra.", nome)
+	fmt.Println("Este programa está na versão", versao)
+}
+
+func leComando() int { // o int depois do (), é para informar o tipo do retorno
+
+	var comandoLido int
+	fmt.Scan(&comandoLido) // como se fosse o input, o comando scan ele pode colocar ali sem o scanf, e tirar o %d
+	fmt.Println("O comando escolhido foi", comandoLido)
+	fmt.Println("")
+
+	return comandoLido
+}
+
+func exibeMenu() {
+
+	fmt.Println("1- Iniciar Monitoramento")
+	fmt.Println("2- Exibir Logs")
+	fmt.Println("0- Sair do Programa")
+
+}
+
+func inicarMonitoramento() {
+	fmt.Println("Monitorando...")
+	sites := []string{
+		"https://random-status-code.herokuapp.com",
+		"https://www.alura.com.br",
+		"https://www.caelum.com.br",
+	}
+
+	//fmt.Println(sites)
+	for i := 0; i < monitoramentos; i++ {
+		for i, site := range sites {
+			fmt.Println("Estou passando na posição", i, "do meu slice e essa posição tem o site", site)
+			testaSite(site)
+		}
+		time.Sleep(delay * time.Second)
+		fmt.Println("")
+	}
+	fmt.Println("")
+	//site := "https://random-status-code.herokuapp.com" // get faz uma requisição
+
+	//fmt.Println(resp)
+}
+
+/*func exibeNomes() {
+	nomes := []string{"Douglas", "Daniel", "Edrielle"}
+	fmt.Println("O meu slice tem", len(nomes), "itens")
+	fmt.Println("O meu slice tem capacidade para", cap(nomes), "itens")
+
+	nomes = append(nomes, "Aparecida")
+
+	fmt.Println(nomes)
+	fmt.Println(reflect.TypeOf(nomes))
+	fmt.Println("O meu slice tem", len(nomes))
+	fmt.Println("O meu slice tem capacidade para", cap(nomes), "itens")
+
+}
+*/
+
+func testaSite(site string) {
+	resp, _ := http.Get(site)
+	if resp.StatusCode == 200 {
+		fmt.Println("Site:", site, "foi carregado com sucesso!")
+	} else {
+		fmt.Println("O site:", site, "está com problemas. Status Code:", resp.StatusCode)
+	}
+
+}
